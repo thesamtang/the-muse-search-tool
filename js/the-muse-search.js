@@ -11,30 +11,32 @@ app.controller("SearchController", function($scope, $document) {
         q: "",
         categories: ["jobs", "companies", "posts", "resources"]
     };
+    
     $scope.response = {
-        results: [],
+        resultsReceived: false,
+        resultsPresent: false,
         posts: [],
         jobs: [],
         companies: [],
-        resources: [],
-        resultsReceived: false,
-        resultsPresent: true
+        resources: []
     };
     
     
     $scope.submit = function() {
         $scope.request.q = $scope.input.trim().toLowerCase().replace(" ", "%20");
-        _buildRequestUrl();
-        
-        $.ajax({
-            url: $scope.request.url,
-            data: $scope.request.data,
-            type: "GET",
-            dataType: "JSON",
-            success: function(data) {
-                _processResponse(data);
-            }
-        });
+        if ($scope.request.q.length > 0) {
+            _buildRequestUrl();
+
+            $.ajax({
+                url: $scope.request.url,
+                data: $scope.request.data,
+                type: "GET",
+                dataType: "JSON",
+                success: function(data) {
+                    _processResponse(data);
+                }
+            });
+        }
     };
     
     var _processResponse = function(data) {
@@ -43,10 +45,8 @@ app.controller("SearchController", function($scope, $document) {
             
         } else {
             console.log("results received");
-            $scope.response.results = data.results;
-            $scope.response.resultsReceived = true;
             if (data.results.length > 0) {
-                _filterResults();
+                _filterResults(data.results);
                 console.log($scope.response.companies);
                 console.log($scope.response.jobs);
                 console.log($scope.response.posts);
@@ -59,19 +59,24 @@ app.controller("SearchController", function($scope, $document) {
         
     };
     
-    var _filterResults = function(obj) {
-        $scope.response.companies = $scope.response.results.filter(function(result) {
-            return result.model_type === "companies";
+    var _filterResults = function(results) {
+        $scope.$apply(function() {
+            $scope.response.resultsReceived = true;
+            
+            $scope.response.companies = results.filter(function(result) {
+                return result.model_type === "companies";
+            });
+            $scope.response.posts = results.filter(function(result) {
+                return result.model_type === "posts";
+            });
+            $scope.response.jobs = results.filter(function(result) {
+                return result.model_type === "jobs";
+            });
+            $scope.response.resources = results.filter(function(result) {
+                return result.model_type === "resources";
+            });
         });
-        $scope.response.posts = $scope.response.results.filter(function(result) {
-            return result.model_type === "posts";
-        });
-        $scope.response.jobs = $scope.response.results.filter(function(result) {
-            return result.model_type === "jobs";
-        });
-        $scope.response.resources = $scope.response.results.filter(function(result) {
-            return result.model_type === "resources";
-        });
+        
     };
     
     var _buildRequestUrl = function() {

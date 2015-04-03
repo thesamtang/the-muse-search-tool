@@ -1,6 +1,7 @@
 body {
     background-color: #f1f1f1;
     font-family: 'Lato', sans-serif;
+    font-weight: 300;
 }
 
 .clearfix:after {
@@ -10,7 +11,7 @@ body {
 }
 
 .content {
-    width: 960px;
+    width: 600px;
     height: 100%;
     margin: auto;
 }
@@ -18,18 +19,24 @@ body {
 #header {
     width: 100%;
     margin-top: 40px;
-    border: 1px solid #000;
+    //border: 1px solid #000;
 }
 
 
 #results {
     width: 100%;
     margin-top: 40px;
-    border: 1px solid #000;
+    //border: 1px solid #000;
 }
 
 #results h2 {
     color: #53b6d0;
+    font-weight: 300;
+}
+
+#results li {
+    margin-bottom: 5px;
+    list-style-type: none;
 }
 
 #title, #search-bar {
@@ -42,12 +49,13 @@ body {
 
 #title a {
     text-decoration: none;
-    color: #242424;
+    color: #777;
     font-size: 2em;
+    font-weight: 400;
 }
 
 #title a:hover {
-    color: #fff;
+    color: #242424;
 }
 
 #search-bar {
@@ -61,7 +69,6 @@ input[type=text]:active
 {
     background-color: transparent; 
     border-style: solid;
-    font-weight: 300;
     border-width: 0px 0px 1px 0px; 
     border-color: #ccc;
     outline: none;
@@ -70,8 +77,8 @@ input[type=text]:active
 }
 
 #search-btn i {
-    color: #242424;
-    font-size: 1.5em;
+    color: #777;
+    font-size: 1.2em;
 }
 
 #search-btn {
