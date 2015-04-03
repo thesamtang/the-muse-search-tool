@@ -4,16 +4,34 @@
         <title>Search Tool - The Muse</title>
         <link rel="stylesheet" href="css/style.css">
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+        <link href='http://fonts.googleapis.com/css?family=Lato:300,400' rel='stylesheet' type='text/css'>
     </head>
-    <body>
+    <body ng-controller="SearchController">
         <div class="content">
-            <form id="search-bar">
-                <input type="text" placeholder="Search The Muse" autofocus ng-model="input">
-                <span id="search-btn"><i class="fa fa-search"></i></span>
-            </form>
+            <div id="header" class="clearfix">
+                <span id="title">
+                    <a href="https://www.themuse.com">themuse</a>
+                </span>
+                <form id="search-bar" ng-submit="submit()">
+                    <input type="text" placeholder="Search" autofocus ng-model="input">
+                    <span id="search-btn" ng-click="submit()"><i class="fa fa-search"></i></span>
+                </form>
+            </div>
+            
 
             <div id="results">
-
+                <h2 ng-show="response.resultsReceived">Companies</h2>
+                <ul></ul>
+                
+                <h2 ng-show="response.resultsReceived">Jobs</h2>
+                <ul></ul>
+                
+                <h2 ng-show="response.resultsReceived">Posts</h2>
+                <ul></ul>
+                
+                <h2 ng-show="response.resultsReceived">Resources</h2>
+                <ul></ul>
+                
             </div>
         </div>
         
