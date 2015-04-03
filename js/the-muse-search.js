@@ -3,7 +3,10 @@ var app = angular.module("TheMuseSearch", []);
 app.controller("SearchController", function($scope, $document) {
     "use strict";
     
+    // Model declarations
+    $scope.greeting = true;
     $scope.input = "";
+    
     $scope.request = {
         url: "https://www.themuse.com/api/v1/suggest?",
         data: "",
@@ -14,17 +17,18 @@ app.controller("SearchController", function($scope, $document) {
     
     $scope.response = {
         resultsReceived: false,
-        resultsPresent: false,
+        resultsPresent: true,
         posts: [],
         jobs: [],
         companies: [],
         resources: []
     };
     
-    
+    // Controller logic
     $scope.submit = function() {
         $scope.request.q = $scope.input.trim().toLowerCase().replace(" ", "%20");
         if ($scope.request.q.length > 0) {
+            $scope.greeting = false;
             _buildRequestUrl();
 
             $.ajax({
@@ -32,28 +36,25 @@ app.controller("SearchController", function($scope, $document) {
                 data: $scope.request.data,
                 type: "GET",
                 dataType: "JSON",
+                timeout: 2000,
                 success: function(data) {
                     _processResponse(data);
+                },
+                error: function(xhr, textStatus, errorThrown) {
+                    alert(errorThrown);
                 }
             });
         }
     };
     
     var _processResponse = function(data) {
-        console.log(data);
         if (data.error) {
-            
+            alert(data.code + ": " + data.error);
         } else {
-            console.log("results received");
             if (data.results.length > 0) {
                 _filterResults(data.results);
-                console.log($scope.response.companies);
-                console.log($scope.response.jobs);
-                console.log($scope.response.posts);
-                console.log($scope.response.resources);
-                
             } else {
-                
+                _clearResults();
             }
         }
         
@@ -61,6 +62,7 @@ app.controller("SearchController", function($scope, $document) {
     
     var _filterResults = function(results) {
         $scope.$apply(function() {
+            $scope.response.resultsPresent = true;
             $scope.response.resultsReceived = true;
             
             $scope.response.companies = results.filter(function(result) {
@@ -75,8 +77,19 @@ app.controller("SearchController", function($scope, $document) {
             $scope.response.resources = results.filter(function(result) {
                 return result.model_type === "resources";
             });
+        });  
+    };
+    
+    var _clearResults = function() {
+        $scope.$apply(function() {
+            $scope.response.resultsPresent = false;
+            $scope.response.resultsReceived = false;
+            
+            $scope.response.companies = [];
+            $scope.response.posts = [];
+            $scope.response.jobs = [];
+            $scope.response.resources = [];
         });
-        
     };
     
     var _buildRequestUrl = function() {
@@ -87,7 +100,6 @@ app.controller("SearchController", function($scope, $document) {
         $scope.request.data = "q=".concat($scope.request.q)
             .concat("&page=").concat($scope.request.page)
             .concat(categoryString);
-        console.log($scope.request.url);
     };
     
 });
