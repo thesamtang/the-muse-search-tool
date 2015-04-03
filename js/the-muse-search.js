@@ -54,6 +54,7 @@ app.controller("SearchController", function($scope) {
         } else {
             if (data.results.length > 0) {
                 _filterResults(data.results);
+                console.log($scope.response.jobs);
             } else {
                 _clearResults();
             }
