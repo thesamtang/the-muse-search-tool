@@ -1,6 +1,6 @@
 var app = angular.module("TheMuseSearch", []);
 
-app.controller("SearchController", function($scope, $document) {
+app.controller("SearchController", function($scope) {
     "use strict";
     
     // Model declarations
@@ -28,8 +28,9 @@ app.controller("SearchController", function($scope, $document) {
     $scope.submit = function() {
         $scope.request.q = $scope.input.trim().toLowerCase().replace(" ", "%20");
         if ($scope.request.q.length > 0) {
+            
             $scope.greeting = false;
-            _buildRequestUrl();
+            $scope.request.data = _buildRequestUrlData();
 
             $.ajax({
                 url: $scope.request.url,
@@ -41,7 +42,7 @@ app.controller("SearchController", function($scope, $document) {
                     _processResponse(data);
                 },
                 error: function(xhr, textStatus, errorThrown) {
-                    alert(errorThrown);
+                    alert(textStatus + " " + errorThrown);
                 }
             });
         }
@@ -57,7 +58,6 @@ app.controller("SearchController", function($scope, $document) {
                 _clearResults();
             }
         }
-        
     };
     
     var _filterResults = function(results) {
@@ -92,14 +92,15 @@ app.controller("SearchController", function($scope, $document) {
         });
     };
     
-    var _buildRequestUrl = function() {
+    var _buildRequestUrlData = function() {
         var categoryString = "";
+        
         for (var i = 0; i < $scope.request.categories.length; i++) {
             categoryString = categoryString.concat("&category%5B%5D=").concat($scope.request.categories[i]);
         }
-        $scope.request.data = "q=".concat($scope.request.q)
+        
+        return "q=".concat($scope.request.q)
             .concat("&page=").concat($scope.request.page)
             .concat(categoryString);
     };
-    
 });
